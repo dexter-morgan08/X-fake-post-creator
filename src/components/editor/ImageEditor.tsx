@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { usePostStore } from "@/store/postStore";
 import { validateImageFile, fileToObjectUrl, revokeObjectUrl } from "@/lib/image";
-import { Field, Section, Segmented, TextInput } from "@/components/ui/controls";
+import { Field, Section, Segmented, TextInput, Toggle } from "@/components/ui/controls";
 import type { ImageAspectRatio, ImageFit } from "@/types/post";
 
 export function ImageEditor() {
@@ -13,6 +13,7 @@ export function ImageEditor() {
   const imageFit = usePostStore((s) => s.imageFit);
   const imageRadius = usePostStore((s) => s.imageRadius);
   const imageZoom = usePostStore((s) => s.imageZoom);
+  const vectorOverlay = usePostStore((s) => s.vectorOverlay);
   const update = usePostStore((s) => s.update);
   const setToast = usePostStore((s) => s.setToast);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -89,9 +90,24 @@ export function ImageEditor() {
             { value: "1:1", label: "1:1" },
             { value: "4:3", label: "4:3" },
             { value: "16:9", label: "16:9" },
+            { value: "3:4", label: "3:4" },
           ]}
         />
       </Field>
+
+      <Toggle
+        checked={vectorOverlay}
+        onChange={(v) => {
+          update({ vectorOverlay: v });
+          setToast(v ? "Vector overlay ON — media slot stays empty" : "Vector overlay OFF");
+        }}
+        label="Vector overlay (empty media slot)"
+      />
+      {vectorOverlay ? (
+        <p className="text-[11px] leading-relaxed text-zinc-500">
+          Transparent media window with a thin frame outline — no image, no label. The area inside the frame stays see-through. Exports as a scalable SVG overlay for video editors.
+        </p>
+      ) : null}
 
       <Field label="Image fit">
         <Segmented<ImageFit>

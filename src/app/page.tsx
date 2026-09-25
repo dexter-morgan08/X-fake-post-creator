@@ -46,7 +46,7 @@ export default function Home() {
             <PostPreview ref={previewRef} />
           </div>
           <p className="mt-4 text-center text-[11px] text-zinc-500">
-            Exported PNG always retains the FICTIONAL MOCKUP indicator — it cannot be removed.
+            Exported PNG and SVG overlay always retain the FICTIONAL MOCKUP indicator — it cannot be removed.
           </p>
         </section>
       </main>

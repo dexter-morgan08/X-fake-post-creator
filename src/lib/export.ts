@@ -1,6 +1,6 @@
 "use client";
 
-import { toPng } from "html-to-image";
+import { toPng, toSvg } from "html-to-image";
 
 export function getExportBackground(node: HTMLElement): string {
   // Prefer the inline hex background we set on the preview card.
@@ -50,6 +50,32 @@ export async function exportNodeToPng(node: HTMLElement, filename: string): Prom
   }).catch((err: unknown) => {
     logExportFailure("toPng", err);
     throw err instanceof Error ? err : new Error("Export failed — the preview could not be rendered to PNG.");
+  });
+  const link = document.createElement("a");
+  link.download = filename;
+  link.href = dataUrl;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+export async function exportNodeToSvg(node: HTMLElement, filename: string): Promise<void> {
+  if (!node) throw new Error("Preview node not found.");
+  // toSvg serializes the preview DOM into a scalable vector file.
+  // Same safeguards as PNG: skip webfont embedding (system fonts only),
+  // no cache-busting (preserves blob: URLs), empty placeholder on image errors.
+  const dataUrl = await toSvg(node, {
+    cacheBust: false,
+    backgroundColor: getExportBackground(node),
+    imagePlaceholder: "",
+    skipFonts: true,
+    fetchRequestInit: { cache: "force-cache" },
+    onImageErrorHandler: (url, err) => {
+      console.error(`[export] image embed failed for ${url}:`, err);
+    },
+  }).catch((err: unknown) => {
+    logExportFailure("toSvg", err);
+    throw err instanceof Error ? err : new Error("Export failed — the preview could not be rendered to SVG.");
   });
   const link = document.createElement("a");
   link.download = filename;

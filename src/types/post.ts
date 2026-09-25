@@ -1,4 +1,4 @@
-export type ImageAspectRatio = "auto" | "1:1" | "4:3" | "16:9";
+export type ImageAspectRatio = "auto" | "1:1" | "4:3" | "16:9" | "3:4";
 export type ImageFit = "cover" | "contain";
 export type TimestampMode = "relative" | "absolute";
 export type ThemeName = "light" | "dark" | "soft" | "minimal";
@@ -17,6 +17,7 @@ export interface PostData {
   imageFit: ImageFit;
   imageRadius: number;
   imageZoom: number;
+  vectorOverlay: boolean;
 
   timestampMode: TimestampMode;
   timestamp: string;
@@ -45,6 +46,7 @@ export const DEFAULT_POST: PostData = {
   imageFit: "cover",
   imageRadius: 16,
   imageZoom: 100,
+  vectorOverlay: false,
   timestampMode: "relative",
   timestamp: "10:42 AM",
   date: "Sep 24, 2026",
